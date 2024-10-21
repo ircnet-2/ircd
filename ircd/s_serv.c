@@ -1260,13 +1260,15 @@ int	m_server_estab(aClient *cptr, char *sid, char *versionbuf)
 			*/
 			send_umode(NULL, acptr, 0, SEND_UMODES, buf);
 			sendto_one(cptr,
-					   ":%s UNICK %s %s %s %s %s %s :%s",
+					   ":%s UNICK %s %s %s %s %s %s %s :%s",
 					   acptr->user->servp->sid,
 					   acptr->name, acptr->uid,
 					   acptr->user->username,
 					   acptr->user->host,
 					   get_client_ip(acptr),
-					   (*buf) ? buf : "+", acptr->info);
+					   (*buf) ? buf : "+",
+                       IsSASLAuthed(acptr) ? acptr->sasl_user : "*",
+                       acptr->info);
 		    }
 		else if (IsService(acptr) && match_service_dist(cptr, acptr->service->dist))
 		{

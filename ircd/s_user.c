@@ -822,10 +822,12 @@ int	register_user(aClient *cptr, aClient *sptr, char *nick, char *username)
 			continue;
 		}
 		sendto_one(acptr,
-				":%s UNICK %s %s %s %s %s %s :%s",
+				":%s UNICK %s %s %s %s %s %s %s :%s",
 				user->servp->sid, nick, sptr->uid,
 				user->username, user->host, get_client_ip(sptr),
-				(*buf) ? buf : "+", sptr->info);
+				(*buf) ? buf : "+",
+                IsSASLAuthed(sptr) ? sptr->sasl_user : "*",
+				sptr->info);
 	}	/* for(my-leaf-servers) */
 #ifdef	USE_SERVICES
 #if 0
@@ -1261,7 +1263,8 @@ nickkilldone:
 **	parv[4] = client host name
 **	parv[5] = client ip
 **	parv[6] = users mode
-**	parv[7] = users real name info
+**	parv[7] = SASL user name or '*' if not logged in
+**	parv[8] = user's real name
 */
 int	m_unick(aClient *cptr, aClient *sptr, int parc, char *parv[])
 {
@@ -1272,7 +1275,14 @@ int	m_unick(aClient *cptr, aClient *sptr, int parc, char *parv[])
 	uid = parv[2];
 	user = parv[3];
 	host = parv[4];
-	realname = parv[7];
+
+    if(parc == 9)
+    {
+        realname = parv[8];
+    }
+    else {
+        realname = parv[7];
+    }
 
 	/*
 	 * if do_nick_name() returns a null name OR if the server sent a nick
@@ -1421,6 +1431,15 @@ int	m_unick(aClient *cptr, aClient *sptr, int parc, char *parv[])
 	acptr->info = mystrdup(realname);
 	strncpyzt(acptr->user->username, parv[3], USERLEN+1);
 	strncpyzt(acptr->user->host, host, sizeof(acptr->user->host));
+
+	if (parc == 9 &&
+		*parv[7] != '*' && /* not logged in */
+		*parv[7] != ':' /* old ircd sends real name here */)
+	{
+		acptr->flags |= FLAGS_SASL;
+		acptr->sasl_user = mystrdup(parv[7]);
+	}
+
 	reorder_client_in_list(acptr);
 
 	/*
