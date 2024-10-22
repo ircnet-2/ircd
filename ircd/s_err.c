@@ -533,7 +533,7 @@ char *	replies[] = {
 /* 483 ERR_CANTKILLSERVER */	":%s 483 %s %s :You can't kill a server!",
 /* 484 ERR_RESTRICTED */	":%s 484 %s :Your connection is restricted!",
 /* 485 ERR_UNIQOPRIVSNEEDED */	":%s 485 %s :You're not the original channel operator",
-/* 486 */ (char *)NULL,
+/* 486 ERR_MESSAGENEEDSASLAUTH */ ":%s 486 %s %s :You need to be authenticated with SASL to message this user",
 /* 487 */ (char *)NULL,
 /* 488 */ (char *)NULL,
 /* 489 */ (char *)NULL,

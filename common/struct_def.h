@@ -198,8 +198,10 @@ typedef enum Status {
 #define FLAGS_XLINED	0x0100	/* X-lined client */
 #endif
 #define FLAGS_TLS		0x0200 /* user is on a secure connection port (SSL/TLS) -- mh 2020-04-27 */
-#define	SEND_UMODES	(FLAGS_INVISIBLE|FLAGS_OPER|FLAGS_WALLOP|FLAGS_AWAY|FLAGS_RESTRICT)
-#define	ALL_UMODES	(SEND_UMODES|FLAGS_LOCOP)
+#define FLAGS_MSGNEEDSASLAUTH	0x1000 /* user accepts messages only from authenticated users */
+
+#define	SEND_UMODES (FLAGS_INVISIBLE|FLAGS_OPER|FLAGS_WALLOP|FLAGS_AWAY|FLAGS_RESTRICT)
+#define	ALL_UMODES (SEND_UMODES|FLAGS_LOCOP|FLAGS_MSGNEEDSASLAUTH)
 
 /*
  * user flags macros.
@@ -273,6 +275,8 @@ typedef enum Status {
 #define IsCAPNegotiation(x)	(MyConnect(x) && (x)->cap_negotation)
 #define HasCap(x, y)		(MyConnect(x) && (x)->caps & y)
 #define IsSASLAuthed(x)		((x)->flags & FLAGS_SASL)
+#define IsBlockedNonAuthMsg(from, to) (to->user->flags & FLAGS_MSGNEEDSASLAUTH) && IsPerson(from) \
+                                    && !IsSASLAuthed(from) && !IsAnOper(from)
 /*
  * defined debugging levels
  */
