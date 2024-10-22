@@ -40,6 +40,7 @@ static int user_modes[]	     = { FLAGS_OPER, 'o',
 				 FLAGS_INVISIBLE, 'i',
 				 FLAGS_WALLOP, 'w',
 				 FLAGS_RESTRICT, 'r',
+				 FLAGS_MSGNEEDSASLAUTH, 'R',
 				 FLAGS_AWAY, 'a',
 				 0, 0 };
 
@@ -1521,6 +1522,11 @@ static	int	m_message(aClient *cptr, aClient *sptr, int parc,
 			&& (acptr = find_uid(nick, NULL))) || 
 			(acptr = find_person(nick, NULL)))
 		    {
+				if (IsBlockedNonAuthMsg(sptr, acptr))
+				{
+					sendto_one(sptr, replies[ERR_MESSAGENEEDSASLAUTH], ME, BadTo(parv[0]), nick);
+					continue;
+				}
 			if (!notice && MyConnect(sptr) &&
 			    acptr->user && (acptr->user->flags & FLAGS_AWAY))
 				send_away(sptr, acptr);
@@ -1647,10 +1653,15 @@ static	int	m_message(aClient *cptr, aClient *sptr, int parc,
 			if (acptr)
 			    {
 				if (count == 1)
-					sendto_prefix_one(acptr, sptr,
-							  ":%s %s %s :%s",
-					 		  parv[0], cmd,
-							  nick, parv[2]);
+				{
+					if (!IsBlockedNonAuthMsg(sptr, acptr))
+					{
+						sendto_prefix_one(acptr, sptr,
+										  ":%s %s %s :%s",
+										  parv[0], cmd,
+										  nick, parv[2]);
+					}
+				}
 				else if (!notice)
 					sendto_one(sptr, replies[ERR_TOOMANYTARGETS],
 						   ME, BadTo(parv[0]), "Duplicate", nick,
@@ -1669,10 +1680,15 @@ static	int	m_message(aClient *cptr, aClient *sptr, int parc,
 			if (acptr)
 			    {
 				if (count == 1)
-					sendto_prefix_one(acptr, sptr,
-							  ":%s %s %s :%s",
-					 		  parv[0], cmd,
-							  nick, parv[2]);
+				{
+					if (!IsBlockedNonAuthMsg(sptr, acptr))
+					{
+						sendto_prefix_one(acptr, sptr,
+										  ":%s %s %s :%s",
+										  parv[0], cmd,
+										  nick, parv[2]);
+					}
+				}
 				else if (!notice)
 					sendto_one(sptr, replies[ERR_TOOMANYTARGETS],
 						   ME, BadTo(parv[0]), "Duplicate", nick,
