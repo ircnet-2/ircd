@@ -1075,10 +1075,11 @@ int	m_mode(aClient *cptr, aClient *sptr, int parc, char *parv[])
 			continue;
 		    }
 		if (!UseModes(name))
-		    {
+			{
+			sendto_one(sptr, replies[ERR_CHANOPRIVSNEEDED], ME,BadTo(parv[0]), name);
 			penalty += 1;
 			continue;
-		    }
+			}
 		if (parc < 3)	/* Only a query */
 		    {
 			*modebuf = *parabuf = '\0';
