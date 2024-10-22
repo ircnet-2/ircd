@@ -823,7 +823,7 @@ void	channel_modes(aClient *cptr, char *mbuf, char *pbuf, aChannel *chptr)
 		*mbuf++ = 'a';
 	if (chptr->mode.mode & MODE_QUIET)
 		*mbuf++ = 'q';
-	if (chptr->mode.mode & MODE_REOP)
+	if (chptr->mode.mode & MODE_NEEDSASLAUTH)
 		*mbuf++ = 'r';
 	if (chptr->mode.limit)
 	    {
@@ -1075,12 +1075,11 @@ int	m_mode(aClient *cptr, aClient *sptr, int parc, char *parv[])
 			continue;
 		    }
 		if (!UseModes(name))
-		    {
-			sendto_one(sptr, replies[ERR_NOCHANMODES], ME, BadTo(parv[0]),
-				   name);
+			{
+			sendto_one(sptr, replies[ERR_CHANOPRIVSNEEDED], ME,BadTo(parv[0]), name);
 			penalty += 1;
 			continue;
-		    }
+			}
 		if (parc < 3)	/* Only a query */
 		    {
 			*modebuf = *parabuf = '\0';
@@ -1113,7 +1112,7 @@ static	int	set_mode(aClient *cptr, aClient *sptr, aChannel *chptr,
 				MODE_PRIVATE,    'p', MODE_SECRET,     's',
 				MODE_MODERATED,  'm', MODE_NOPRIVMSGS, 'n',
 				MODE_TOPICLIMIT, 't', MODE_INVITEONLY, 'i',
-				MODE_ANONYMOUS,  'a', MODE_REOP,       'r',
+				MODE_ANONYMOUS,  'a', MODE_NEEDSASLAUTH, 'r',
 				0x0, 0x0 };
 
 	Reg	Link	*lp = NULL;
@@ -1511,8 +1510,7 @@ static	int	set_mode(aClient *cptr, aClient *sptr, aChannel *chptr,
 
 			if (*ip)
 			    {
-				if ((*ip == MODE_ANONYMOUS || *ip == MODE_REOP)
-					&& whatt == MODE_ADD && !IsServer(sptr))
+				if (*ip == MODE_ANONYMOUS && whatt == MODE_ADD && !IsServer(sptr))
 					sendto_one(cptr,
 						   replies[ERR_UNKNOWNMODE],
 						   ME, BadTo(sptr->name), *curr,
@@ -1604,12 +1602,6 @@ static	int	set_mode(aClient *cptr, aClient *sptr, aChannel *chptr,
 				      sendto_channel_butone(NULL, &me, chptr, ":%s NOTICE %s :Be aware that anonymity on IRC is NOT securely enforced!", ME, chptr->chname);
 				  }
 			  }
-			/* +r coming from server must trigger reop. If not
-			** needed, it will be reset to 0 elsewhere, --B. */
-			if (*ip == MODE_REOP && IsServer(sptr))
-			{
-				chptr->reop = timeofday + LDELAYCHASETIMELIMIT;
-			}
 			*mbuf++ = *(ip+1);
 		    }
 
@@ -2016,6 +2008,14 @@ static	int	can_join(aClient *sptr, aChannel *chptr, char *key)
 	    && !match_modeid(CHFL_INVITE, sptr, chptr)
 	    && (lp == NULL))
 		return (ERR_INVITEONLYCHAN);
+
+    if ((chptr->mode.mode & MODE_NEEDSASLAUTH)
+        && !IsSASLAuthed(sptr)
+        && !match_modeid(CHFL_INVITE, sptr, chptr)
+        && (lp == NULL))
+    {
+        return (ERR_JOINNEEDSASLAUTH);
+    }
 
 	if (*chptr->mode.key && (BadPtr(key) || mycmp(chptr->mode.key, key)))
 		return (ERR_BADCHANNELKEY);
@@ -2829,8 +2829,6 @@ int	m_njoin(aClient *cptr, aClient *sptr, int parc, char *parv[])
 		    {
 			if (!UseModes(parv[1]))
 			    {
-				sendto_one(cptr, replies[ERR_NOCHANMODES],
-							 ME, BadTo(parv[0]), parv[1]);
 				continue;
 			    }
 			switch (cnt)
@@ -3052,13 +3050,13 @@ int	m_kick(aClient *cptr, aClient *sptr, int parc, char *parv[])
 		    }
 		if (check_channelmask(sptr, cptr, name))
 			continue;
-                if (!UseModes(name))
-                    {
-                        sendto_one(sptr, replies[ERR_NOCHANMODES], ME, BadTo(parv[0]),
-				   name);
-			penalty += 2;
-			continue;
-		    }
+			if (!UseModes(name))
+			{
+				sendto_one(sptr, replies[ERR_CHANOPRIVSNEEDED], ME,
+						   BadTo(parv[0]), name);
+				penalty += 2;
+				continue;
+			}
 		if (!IsServer(sptr) && !is_chan_op(sptr, chptr))
 		    {
 			if (!IsMember(sptr, chptr))
@@ -3173,8 +3171,8 @@ int	m_topic(aClient *cptr, aClient *sptr, int parc, char *parv[])
 		}
 		if (!UseModes(name))
 		{
-			sendto_one(sptr, replies[ERR_NOCHANMODES], ME, 
-				parv[0], name);
+			sendto_one(sptr, replies[ERR_CHANOPRIVSNEEDED], ME,
+					   BadTo(parv[0]), name);
 			continue;
 		}
 		chptr = find_channel(name, NullChn);
@@ -3973,10 +3971,6 @@ time_t	collect_channel_garbage(time_t now)
 			if (tmp && tmp->flags == CHFL_REOPLIST)
 			{
 				r_cnt += reop_channel(now, chptr, CHFL_REOPLIST);
-			}
-			else if (chptr->mode.mode & MODE_REOP)
-			{
-				r_cnt += reop_channel(now, chptr, !CHFL_REOPLIST);
 			}
 		}
 	}

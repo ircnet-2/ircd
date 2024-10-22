@@ -524,7 +524,7 @@ char *	replies[] = {
 /* 474 ERR_BANNEDFROMCHAN */	":%s 474 %s %s :Cannot join channel (+b)",
 /* 475 ERR_BADCHANNELKEY */	":%s 475 %s %s :Cannot join channel (+k)",
 /* 476 ERR_BADCHANMASK */	":%s 476 %s %s :Bad Channel Mask",
-/* 477 ERR_NOCHANMODES */	":%s 477 %s %s :Channel doesn't support modes",
+/* 477 ERR_JOINNEEDSASLAUTH */  ":%s 477 %s %s :Cannot join channel (+r) - you need to be authenticated with SASL",
 /* 478 ERR_BANLISTFULL */	":%s 478 %s %s %s!%s@%s :Channel list is full",
 /* 479 */ (char *)NULL,
 /* 480 */ (char *)NULL,
