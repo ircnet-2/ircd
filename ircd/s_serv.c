@@ -1252,7 +1252,7 @@ int	m_server_estab(aClient *cptr, char *sid, char *versionbuf)
 		if (acptr->from == cptr)
 			continue;
 		if (IsPerson(acptr))
-		    {
+		{
 			/*
 			** IsPerson(x) is true only when IsClient(x) is true.
 			** These are only true when *BOTH* NICK and USER have
@@ -1267,9 +1267,9 @@ int	m_server_estab(aClient *cptr, char *sid, char *versionbuf)
 					   acptr->user->host,
 					   get_client_ip(acptr),
 					   (*buf) ? buf : "+",
-                       IsSASLAuthed(acptr) ? acptr->sasl_user : "*",
-                       acptr->info);
-		    }
+					   IsSASLAuthed(acptr) ? acptr->sasl_user : "*",
+					   acptr->info);
+		}
 		else if (IsService(acptr) && match_service_dist(cptr, acptr->service->dist))
 		{
 			sendto_one(cptr, ":%s SERVICE %s %s %d :%s",

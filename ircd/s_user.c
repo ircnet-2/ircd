@@ -822,12 +822,12 @@ int	register_user(aClient *cptr, aClient *sptr, char *nick, char *username)
 			continue;
 		}
 		sendto_one(acptr,
-				":%s UNICK %s %s %s %s %s %s %s :%s",
-				user->servp->sid, nick, sptr->uid,
-				user->username, user->host, get_client_ip(sptr),
-				(*buf) ? buf : "+",
-                IsSASLAuthed(sptr) ? sptr->sasl_user : "*",
-				sptr->info);
+				   ":%s UNICK %s %s %s %s %s %s %s :%s",
+				   user->servp->sid, nick, sptr->uid,
+				   user->username, user->host, get_client_ip(sptr),
+				   (*buf) ? buf : "+",
+				   IsSASLAuthed(sptr) ? sptr->sasl_user : "*",
+				   sptr->info);
 	}	/* for(my-leaf-servers) */
 #ifdef	USE_SERVICES
 #if 0
@@ -1276,13 +1276,14 @@ int	m_unick(aClient *cptr, aClient *sptr, int parc, char *parv[])
 	user = parv[3];
 	host = parv[4];
 
-    if(parc == 9)
-    {
-        realname = parv[8];
-    }
-    else {
-        realname = parv[7];
-    }
+	if (parc == 9)
+	{
+		realname = parv[8];
+	}
+	else
+	{
+		realname = parv[7];
+	}
 
 	/*
 	 * if do_nick_name() returns a null name OR if the server sent a nick
