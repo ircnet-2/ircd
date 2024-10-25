@@ -41,10 +41,12 @@
 				 SERVICE_WANT_UMODE)
 
 /* options */
-#define	SERVICE_WANT_PREFIX	0x00010000 /* to receive n!u@h instead of n */
-#define	SERVICE_WANT_SID	0x00020000 /* use serv token instead of name */
-#define	SERVICE_WANT_EXTNICK	0x00040000 /* user extended NICK syntax */
-#define	SERVICE_WANT_UID	0x00080000 /* user extended UID syntax */
+#define	SERVICE_WANT_PREFIX			0x00010000 /* to receive n!u@h instead of n */
+#define	SERVICE_WANT_SID			0x00020000 /* use serv token instead of name */
+#define	SERVICE_WANT_EXTNICK		0x00040000 /* user extended NICK syntax */
+#define	SERVICE_WANT_UID			0x00080000 /* user extended UID syntax */
+#define	SERVICE_WANT_ACCOUNT_TAG 	0x00100000 /* SASL account tag */
+#define	SERVICE_WANT_UID_TAG		0x00200000 /* UID tag */
 
 /* A couple example types of services */
 #define	SERVICE_ALL	SERVICE_MASK_ALL
