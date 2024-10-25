@@ -32,6 +32,7 @@ static const volatile char rcsid[] = "@(#)$Id: s_service.c,v 1.69 2010/08/12 01:
 #undef S_SERVICE_C
 
 aService	*svctop = NULL;
+void create_service_message_tags(aClient *service, aClient *client, char *tags, int len);
 
 aService	*make_service(aClient *cptr)
 {
@@ -766,20 +767,59 @@ int	m_squery(aClient *cptr, aClient *sptr, int parc, char *parv[])
 	    }
 
 	if ((acptr = best_service(parv[1], NULL)))
+	{
+		char tags[BUFSIZE];
+		create_service_message_tags(acptr, sptr, tags, BUFSIZE);
+
 		if (MyConnect(acptr) &&
-		    (acptr->service->wants & SERVICE_WANT_PREFIX))
-			sendto_one(acptr, ":%s!%s@%s SQUERY %s :%s", parv[0],
-				   sptr->user->username, sptr->user->host,
-				   acptr->name, parv[2]);
-		else if (MyConnect(acptr) && 
-			(acptr->service->wants & SERVICE_WANT_UID))
-			sendto_one(acptr, ":%s SQUERY %s :%s", sptr->uid,
-				   acptr->name, parv[2]);
+			(acptr->service->wants & SERVICE_WANT_PREFIX))
+			sendto_one(acptr, "%s:%s!%s@%s SQUERY %s :%s", tags, parv[0],
+					   sptr->user->username, sptr->user->host,
+					   acptr->name, parv[2]);
+		else if (MyConnect(acptr) &&
+				 (acptr->service->wants & SERVICE_WANT_UID))
+			sendto_one(acptr, "%s:%s SQUERY %s :%s", tags, sptr->uid,
+					   acptr->name, parv[2]);
 		else
-			sendto_one(acptr, ":%s SQUERY %s :%s",
-				   parv[0], acptr->name, parv[2]);
+			sendto_one(acptr, "%s:%s SQUERY %s :%s",
+					   tags, parv[0], acptr->name, parv[2]);
+	}
 	else
 		sendto_one(sptr, replies[ERR_NOSUCHSERVICE], ME, BadTo(parv[0]), parv[1]);
 	return 2;
 }
 
+void create_service_message_tags(aClient *service, aClient *client, char *tags, int len)
+{
+	tags[0] = '\0';
+
+	if (MyConnect(service) &&
+		(service->service->wants & SERVICE_WANT_ACCOUNT_TAG || service->service->wants & SERVICE_WANT_UID_TAG))
+	{
+		if (service->service->wants & SERVICE_WANT_UID_TAG)
+		{
+			strncat(tags, "@uid=", len - strlen(tags) - 1);
+			strncat(tags, client->uid, len - strlen(tags) - 1);
+		}
+
+		if (service->service->wants & SERVICE_WANT_ACCOUNT_TAG && IsSASLAuthed(client))
+		{
+			if (tags[0] == '\0')
+			{
+				strncat(tags, "@", len - strlen(tags) - 1);
+			}
+			else
+			{
+				strncat(tags, ";", len - strlen(tags) - 1);
+			}
+
+			strncat(tags, "account=", len - strlen(tags) - 1);
+			strncat(tags, client->sasl_user, len - strlen(tags) - 1);
+		}
+
+		if (tags[0] != '\0')
+		{
+			strncat(tags, " ", len - strlen(tags) - 1);
+		}
+	}
+}
