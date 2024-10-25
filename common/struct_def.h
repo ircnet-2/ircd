@@ -19,7 +19,7 @@
  *
  *   $Id: struct_def.h,v 1.152 2011/01/20 14:26:56 bif Exp $
  */
-
+// clang-format off
 typedef	struct	ConfItem aConfItem;
 typedef	struct	ListItem aListItem;
 typedef	struct 	Client	aClient;
@@ -1106,4 +1106,4 @@ typedef struct
 #define CCL_QUITINFO 0x08	/* if quits, then with quit message */
 #define CCL_NICK     0x10	/* nick changes */
 #endif
-
+// clang-format on
