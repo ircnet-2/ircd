@@ -107,11 +107,11 @@ static	int	send_users(aClient *, aClient *, int, char **);
 **	parv[0] = sender prefix
 **	parv[1] = remote server
 */
-int	m_version(aClient *cptr, aClient *sptr, int parc, char *parv[])
+int m_version(aClient *cptr, aClient *sptr, int parc, char *parv[])
 {
-	if (hunt_server(cptr,sptr,":%s VERSION :%s",1,parc,parv)==HUNTED_ISME)
+	if (hunt_server(cptr, sptr, ":%s VERSION :%s", 1, parc, parv) == HUNTED_ISME)
 		sendto_one(sptr, replies[RPL_VERSION], ME, BadTo(parv[0]),
-			   version, ME, me.serv->sid, serveropts);
+				   version, ME, me.serv->sid, serveropts);
 	return 2;
 }
 
@@ -2782,16 +2782,15 @@ int	m_trace(aClient *cptr, aClient *sptr, int parc, char *parv[])
 				return 1;
 			}
 			/* passthru */
-              		sendto_one(sptr, replies[RPL_TRACELINK], ME,
-				   BadTo(parv[0]), version, debugmode,
-				   (maskedserv || showsid) ?
-				   	parv[1] : acptr->name,
-				   acptr->from->name,
-				   acptr->from->serv->version,
-				   (acptr->from->flags & FLAGS_ZIP) ? "z" : "",
-        	               	   (int)(timeofday - acptr->from->firsttime),
-                	           (int)DBufLength(&acptr->from->sendQ),
-                        	   (int)DBufLength(&sptr->from->sendQ));
+			sendto_one(sptr, replies[RPL_TRACELINK], ME,
+					   BadTo(parv[0]), version,
+					   (maskedserv || showsid) ? parv[1] : acptr->name,
+					   acptr->from->name,
+					   acptr->from->serv->version,
+					   (acptr->from->flags & FLAGS_ZIP) ? "z" : "",
+					   (int) (timeofday - acptr->from->firsttime),
+					   (int) DBufLength(&acptr->from->sendQ),
+					   (int) DBufLength(&sptr->from->sendQ));
 
 			sendto_one(acptr, ":%s TRACE :%s", sptr->name,
 			      (maskedserv || showsid) ? parv[1] : acptr->name);
@@ -2841,8 +2840,8 @@ int	m_trace(aClient *cptr, aClient *sptr, int parc, char *parv[])
 		}
 	}
 	sendto_one(sptr, replies[RPL_TRACEEND], ME, BadTo(parv[0]),
-		   showsid ? me.serv->sid : acptr->name, version, debugmode);
-	
+			   showsid ? me.serv->sid : acptr->name, version);
+
 	return 2;
 }
 
@@ -2900,12 +2899,12 @@ int	m_etrace(aClient *cptr, aClient *sptr, int parc, char *parv[])
 	}
 
 	sendto_one(sptr, replies[RPL_ETRACEEND], ME, sptr->name, ME,
-			version, debugmode);
+			   version);
 	return 2;
 }
 
 #ifdef ENABLE_SIDTRACE
-int	m_sidtrace(aClient *cptr, aClient *sptr, int parc, char *parv[])
+int m_sidtrace(aClient *cptr, aClient *sptr, int parc, char *parv[])
 {
 	aClient *acptr;
 
@@ -2917,26 +2916,26 @@ int	m_sidtrace(aClient *cptr, aClient *sptr, int parc, char *parv[])
 		if (!IsPerson(acptr))
 			continue;
 
-		if (strncmp(acptr->uid, me.serv->sid, SIDLEN-1))
+		if (strncmp(acptr->uid, me.serv->sid, SIDLEN - 1))
 			continue;
 
 		sendto_one(sptr, replies[RPL_ETRACEFULL],
-			ME, sptr->name,
-			IsAnOper(acptr) ? "Oper" : "User", 
-			MyClient(acptr) ? get_client_class(acptr) : -1, 
-			acptr->name, acptr->user->username,
-			acptr->user->host, get_client_ip(acptr),
+				   ME, sptr->name,
+				   IsAnOper(acptr) ? "Oper" : "User",
+				   MyClient(acptr) ? get_client_class(acptr) : -1,
+				   acptr->name, acptr->user->username,
+				   acptr->user->host, get_client_ip(acptr),
 #ifdef XLINE
-			MyClient(acptr) ? acptr->user2 : "-",
-			MyClient(acptr) ? acptr->user3 : "-",
+				   MyClient(acptr) ? acptr->user2 : "-",
+				   MyClient(acptr) ? acptr->user3 : "-",
 #else
-			"-", "-",
+				   "-", "-",
 #endif
-			acptr->info);
+				   acptr->info);
 	}
 
 	sendto_one(sptr, replies[RPL_ETRACEEND], ME, sptr->name, "*",
-			version, debugmode);
+			   version);
 
 	return 3;
 }

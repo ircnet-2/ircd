@@ -756,11 +756,11 @@ int	register_user(aClient *cptr, aClient *sptr, char *nick, char *username)
 		sendto_one(sptr, replies[RPL_WELCOME], ME, BadTo(nick), buf);
 		/* This is a duplicate of the NOTICE but see below...*/
 		sendto_one(sptr, replies[RPL_YOURHOST], ME, BadTo(nick),
-			   get_client_name(&me, FALSE), version);
+				   get_client_name(&me, FALSE), version);
 		sendto_one(sptr, replies[RPL_CREATED], ME, BadTo(nick), creation);
 		sendto_one(sptr, replies[RPL_MYINFO], ME, BadTo(parv[0]),
-			   ME, version);
-		
+				   ME, version);
+
 		isup = isupport;
 		while (*isup)
 		{

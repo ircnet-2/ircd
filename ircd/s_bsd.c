@@ -3297,12 +3297,12 @@ static	void	polludp(void)
 	 * find max length of data area of packet.
 	 */
 	if (!mlen)
-	    {
+	{
 		mlen = sizeof(readbuf) - strlen(ME) - strlen(version);
 		mlen -= 6;
 		if (mlen < 0)
 			mlen = 0;
-	    }
+	}
 	Debug((DEBUG_DEBUG,"udp poll"));
 
 	memset(&from, 0, fromlen);
@@ -3401,7 +3401,7 @@ static	void	polludp(void)
 	s += n;
 	(void)strcpy(s, ME);
 	s += strlen(s)+1;
-	(void)strcpy(s, version);
+	(void) strcpy(s, version);
 	s += strlen(s);
 	(void)sendto(udpfd, readbuf, s-readbuf, 0, (SAP)&from ,sizeof(from));
 	return;
