@@ -789,6 +789,52 @@ int	m_squery(aClient *cptr, aClient *sptr, int parc, char *parv[])
 	return 2;
 }
 
+/*
+** Forces a user to change his nick.
+**
+** parv[1] - UID of the client who must change his nick
+** parv[2] - New nick
+*/
+int m_forcenick(aClient *cptr, aClient *sptr, int parc, char *parv[])
+{
+	char *args[2];
+	aClient *acptr = find_uid(parv[1], NULL);
+
+	if (parc != 3)
+	{
+		sendto_flag(SCH_NOTICE, "Bad FORCENICK from %s via %s: param count %d instead of 3",
+					sptr->name, get_client_name(cptr, FALSE), parc);
+		return 0;
+	}
+
+	if (acptr == NULL)
+	{
+		return 0;
+	}
+
+	if (!MyClient(acptr))
+	{
+		sendto_flag(SCH_NOTICE, "Bad FORCENICK from %s via %s: %s is not my client",
+					sptr->name, get_client_name(cptr, FALSE), parv[1]);
+		return 0;
+	}
+
+	if (!strcasecmp(acptr->name, parv[2]))
+	{
+		return 0;
+	}
+
+	args[2] = {acptr->name, parv[2]};
+	m_nick(cptr, acptr, 2, args);
+
+	// If FORCENICK was sent by a remote server and the nick has been changed successfully,
+	// inform the remote server about the nick change
+	if (IsServer(cptr) && !strcmp(acptr->name, parv[2]))
+	{
+		sendto_one(cptr, ":%s NICK :%s", acptr->uid, parv[2]);
+	}
+}
+
 void create_service_message_tags(aClient *service, aClient *client, char *tags, int len)
 {
 	tags[0] = '\0';

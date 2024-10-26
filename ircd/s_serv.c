@@ -3819,6 +3819,7 @@ static	char *encap_whitelisted(char *cmd)
 {
 	char *whitelist[] = {
         "SASL",
+        "FORCENICK",
 		NULL
 	};
     int i;
