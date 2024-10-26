@@ -60,6 +60,9 @@ struct Message msgtab[] = {
 { "CAP",      1, MPAR, { _m(m_nop), _m(m_cap), _m(m_cap), _m(m_nop), _m(m_cap) } },
 { "AUTHENTICATE",   1, MPAR, { _m(m_nop), _m(m_nop), _m(m_nop), _m(m_nop), _m(m_authenticate) } },
 { "SASL",     4, MPAR, { _m(m_sasl), _m(m_nop), _m(m_nop), _m(m_sasl), _m(m_nop) } },
+#ifdef USE_SERVICES
+{ "FORCENICK",     2, MPAR, { _m(m_nop), _m(m_nop), _m(m_nop), _m(m_forcenick), _m(m_nop) } },
+#endif
 { "AWAY",     0, MPAR, { _m(m_nop), _m(m_away), _m(m_away), _m(m_nop), _m(m_unreg) } },
 { "UMODE",    1, MPAR, { _m(m_nop), _m(m_umode), _m(m_umode), _m(m_nop), _m(m_unreg) } },
 { "ISON",     1,    1, { _m(m_ison), _m(m_ison), _m(m_ison), _m(m_ison), _m(m_unreg) } },
