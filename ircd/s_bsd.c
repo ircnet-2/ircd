@@ -1019,25 +1019,25 @@ int	check_server_init(aClient *cptr)
 	 * function earlier.
 	 */
 	if (IsConnecting(cptr) || IsHandshake(cptr))
-	    {
+	{
 		c_conf = find_conf(lp, name, CFLAG);
 		n_conf = find_conf(lp, name, NFLAG);
 		if (!c_conf || !n_conf)
-		    {
+		{
 			sendto_flag(SCH_ERROR, "Connecting Error: %s[%s]",
-				   name, get_client_sockhost(cptr));
+						name, get_client_sockhost(cptr));
 			det_confs_butmask(cptr, 0);
 			return -1;
-		    }
-	    }
-#ifdef	UNIXPORT
+		}
+	}
+#ifdef    UNIXPORT
 	if (IsUnixSocket(cptr))
-	    {
+		{
 		if (!c_conf)
 			c_conf = find_conf(lp, name, CFLAG);
 		if (!n_conf)
 			n_conf = find_conf(lp, name, NFLAG);
-	    }
+		}
 #endif
 
 	/*
@@ -1761,7 +1761,7 @@ aClient	*add_connection(aClient *cptr, int fd)
 		if (check_clones(acptr) > CLONE_MAX)
 		{
 			sendto_flag(SCH_LOCAL, "Rejecting connection from %s.",
-				get_client_sockhost(acptr));
+						get_client_sockhost(acptr));
 			acptr->exitc = EXITC_CLONE;
 			sendto_flog(acptr, EXITC_CLONE, "", get_client_sockhost(acptr));
 #ifdef DELAY_CLOSE
@@ -2682,18 +2682,18 @@ free_server:
 	(void)attach_confs_host(cptr, aconf->host, CFLAG|NFLAG);
 
 	if (!find_conf_host(cptr->confs, aconf->host, NFLAG) ||
-	    !find_conf_host(cptr->confs, aconf->host, CFLAG))
-	    {
-      		sendto_flag(SCH_NOTICE,
-			    "Host %s is not enabled for connecting:no C/N-line",
-				get_conf_host(aconf));
+		!find_conf_host(cptr->confs, aconf->host, CFLAG))
+	{
+		sendto_flag(SCH_NOTICE,
+					"Host %s is not enabled for connecting:no C/N-line",
+					get_conf_host(aconf));
 		if (by && IsPerson(by) && !MyClient(by))
-		  sendto_one(by,
-			     ":%s NOTICE %s :Connect to host %s failed.",
-			     ME, by->name, cptr->name);
+			sendto_one(by,
+					   ":%s NOTICE %s :Connect to host %s failed.",
+					   ME, by->name, cptr->name);
 		det_confs_butmask(cptr, 0);
 		goto free_server;
-	    }
+	}
 	/*
 	** The socket has been connected or connect is in progress.
 	*/
@@ -3476,8 +3476,8 @@ static	void	do_dns_async(void)
 			    }
 			else
 				sendto_flag(SCH_ERROR,
-					    "Connect to %s failed: host lookup",
-					   (aconf) ? get_conf_host(aconf) : "unknown");
+							"Connect to %s failed: host lookup",
+							(aconf) ? get_conf_host(aconf) : "unknown");
 			break;
 		case ASYNC_CONF :
 			aconf = ln.value.aconf;

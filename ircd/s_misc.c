@@ -276,7 +276,7 @@ char *get_client_sockhost(aClient *cptr)
 	}
 	else
 #endif
-	return cptr->sockhost;
+		return cptr->sockhost;
 }
 
 /*

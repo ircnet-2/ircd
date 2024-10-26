@@ -1070,16 +1070,16 @@ int	m_server_estab(aClient *cptr, char *sid, char *versionbuf)
 		Debug((DEBUG_INFO, "Check Usernames [%s]vs[%s]",
 			aconf->host, cptr->username));
 		if (match(aconf->host, cptr->username))
-		    {
+		{
 			*s = '@';
 			ircstp->is_ref++;
 			sendto_flag(SCH_ERROR,
-				    "Username mismatch [%s]v[%s] : %s",
-					get_conf_host(aconf), cptr->username,
-				    get_client_name(cptr, TRUE));
+						"Username mismatch [%s]v[%s] : %s",
+						get_conf_host(aconf), cptr->username,
+						get_client_name(cptr, TRUE));
 			sendto_one(cptr, "ERROR :No Username Match");
 			return exit_client(cptr, cptr, &me, "Bad User");
-		    }
+		}
 		*s = '@';
 	    }
 
@@ -2507,32 +2507,32 @@ int	m_connect(aClient *cptr, aClient *sptr, int parc, char *parv[])
 	aconf->port = port;
 	switch (retval = connect_server(aconf, sptr, NULL))
 	{
-	case 0:
-		sendto_one(sptr, ":%s NOTICE %s :*** Connecting to %s[%s].",
-			   ME, parv[0], get_conf_host(aconf), aconf->name);
-		sendto_flag(SCH_NOTICE, "Connecting to %s[%s] by %s",
-				get_conf_host(aconf), aconf->name,
-			    get_client_name(sptr, FALSE));
-		break;
-	case -1:
-		sendto_one(sptr, ":%s NOTICE %s :*** Couldn't connect to %s.",
-			   ME, parv[0], get_conf_host(aconf));
-		sendto_flag(SCH_NOTICE, "Couldn't connect to %s by %s",
-				get_conf_host(aconf), get_client_name(sptr, FALSE));
-		break;
-	case -2:
-		sendto_one(sptr, ":%s NOTICE %s :*** Host %s is unknown.",
-			   ME, parv[0], get_conf_host(aconf));
-		sendto_flag(SCH_NOTICE, "Connect by %s to unknown host %s",
-			    get_client_name(sptr, FALSE), get_conf_host(aconf));
-		break;
-	default:
-		sendto_one(sptr,
-			   ":%s NOTICE %s :*** Connection to %s failed: %s",
-			   ME, parv[0], get_conf_host(aconf), strerror(retval));
-		sendto_flag(SCH_NOTICE, "Connection to %s by %s failed: %s",
-				get_conf_host(aconf), get_client_name(sptr, FALSE),
-			    strerror(retval));
+		case 0:
+			sendto_one(sptr, ":%s NOTICE %s :*** Connecting to %s[%s].",
+					   ME, parv[0], get_conf_host(aconf), aconf->name);
+			sendto_flag(SCH_NOTICE, "Connecting to %s[%s] by %s",
+						get_conf_host(aconf), aconf->name,
+						get_client_name(sptr, FALSE));
+			break;
+		case -1:
+			sendto_one(sptr, ":%s NOTICE %s :*** Couldn't connect to %s.",
+					   ME, parv[0], get_conf_host(aconf));
+			sendto_flag(SCH_NOTICE, "Couldn't connect to %s by %s",
+						get_conf_host(aconf), get_client_name(sptr, FALSE));
+			break;
+		case -2:
+			sendto_one(sptr, ":%s NOTICE %s :*** Host %s is unknown.",
+					   ME, parv[0], get_conf_host(aconf));
+			sendto_flag(SCH_NOTICE, "Connect by %s to unknown host %s",
+						get_client_name(sptr, FALSE), get_conf_host(aconf));
+			break;
+		default:
+			sendto_one(sptr,
+					   ":%s NOTICE %s :*** Connection to %s failed: %s",
+					   ME, parv[0], get_conf_host(aconf), strerror(retval));
+			sendto_flag(SCH_NOTICE, "Connection to %s by %s failed: %s",
+						get_conf_host(aconf), get_client_name(sptr, FALSE),
+						strerror(retval));
 	}
 	aconf->port = tmpport;
 	return 0;

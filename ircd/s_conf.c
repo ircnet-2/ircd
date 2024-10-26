@@ -2392,12 +2392,12 @@ findkline:
 #endif
 	if (tmp)
 	{
-		sendto_one(cptr, replies[ERR_YOUREBANNEDCREEP], 
-			ME, cptr->name,
-			BadPtr(tmp->name) ? "*" : tmp->name,
-			BadPtr(tmp->host) ? "*" : get_conf_host(tmp),
-			*comment ? ": " : "",
-			*comment ? *comment : "");
+		sendto_one(cptr, replies[ERR_YOUREBANNEDCREEP],
+				   ME, cptr->name,
+				   BadPtr(tmp->name) ? "*" : tmp->name,
+				   BadPtr(tmp->host) ? "*" : get_conf_host(tmp),
+				   *comment ? ": " : "",
+				   *comment ? *comment : "");
 	}
 
 	return (tmp ? -1 : 0);

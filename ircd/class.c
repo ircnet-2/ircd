@@ -71,14 +71,14 @@ char *get_conf_host(aConfItem *aconf)
 			| CONF_HUB /* H */
 			| CONF_SERVICE /* S */))
 	{
-		if (aconf->status & (CONF_SERVER_MASK|CONF_OPERATOR|CONF_SERVICE))
+		if (aconf->status & (CONF_SERVER_MASK | CONF_OPERATOR | CONF_SERVICE))
 			return "*@255.255.255.255";
 		else
 			return "255.255.255.255";
 	}
 	else
 #endif
-	return aconf->host;
+		return aconf->host;
 }
 
 int	get_client_class(aClient *acptr)
