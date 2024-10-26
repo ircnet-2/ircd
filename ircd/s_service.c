@@ -824,7 +824,8 @@ int m_forcenick(aClient *cptr, aClient *sptr, int parc, char *parv[])
 		return 0;
 	}
 
-	args[2] = {acptr->name, parv[2]};
+	args[0] = acptr->name;
+	args[1] = parv[2];
 	m_nick(cptr, acptr, 2, args);
 
 	// If FORCENICK was sent by a remote server and the nick has been changed successfully,
