@@ -3828,6 +3828,7 @@ static void report_listeners(aClient *sptr, char *to)
 static	char *encap_whitelisted(char *cmd)
 {
 	char *whitelist[] = {
+		"TKLINE", "UNTKLINE",
         "SASL",
         "FORCENICK",
 		NULL
