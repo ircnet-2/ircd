@@ -3825,13 +3825,13 @@ static void report_listeners(aClient *sptr, char *to)
  * Because only small amount of commands are likely candidates for encap,
  * we use whitelist approach, instead of adding flag field to handlers.
  */
-static	char *encap_whitelisted(char *cmd)
+static char *encap_whitelisted(char *cmd)
 {
 	char *whitelist[] = {
-			"TKLINE", "UNTKLINE",
-			"SASL",
-			"FORCENICK",
-			NULL
+		"TKLINE", "UNTKLINE",
+		"SASL",
+		"FORCENICK",
+		NULL
 	};
 
 	int i;
