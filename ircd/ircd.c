@@ -370,8 +370,8 @@ static	time_t	try_connections(time_t currenttime)
 				   (struct hostent *)NULL) == 0)
 		{
 			sendto_flag(SCH_NOTICE,
-				    "Connection to %s[%s] activated.",
-				    con_conf->name, con_conf->host);
+						"Connection to %s[%s] activated.",
+						con_conf->name, get_conf_host(con_conf));
 		}
 	}
 	else

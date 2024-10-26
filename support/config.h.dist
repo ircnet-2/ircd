@@ -805,6 +805,11 @@
  */
 #define SPOOF_IP    "255.255.255.255"
 
+/*
+ ** Replaces IP addresses of linked servers and services by "255.255.255.255"
+ */
+#undef CLOAK_SERVER_ADDRESSES
+
 /************************************************************************
  *
  * whoistls (see doc/whoistls.txt)
