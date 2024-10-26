@@ -100,7 +100,7 @@
  * mode "i" (i == invisible). Invisibility means people dont showup in
  * WHO or NAMES unless they are on the same channel as you.
  */
-#undef	DEFAULT_INVISIBLE
+#define DEFAULT_INVISIBLE
 
 /* 
  * Define this if you want to have KLINE command for opers and services.
@@ -117,8 +117,8 @@
 /* #define TKLINE_MAXTIME 86400 */
 
 /* Choose tkill notices to be sent either to &OPER or &NOTICES */
-/* #define SCH_TKILL SCH_OPER */
-#define SCH_TKILL SCH_NOTICE
+#define SCH_TKILL SCH_OPER
+/*#define SCH_TKILL SCH_NOTICE */
 
 /* 
  * Operator rights can be precisely defined in O:line flags. However
@@ -131,12 +131,12 @@
 #define	OPER_RESTART
 #define	OPER_SET
 #define	OPER_SQUIT
-#define	OPER_SQUIT_REMOTE
+#undef	OPER_SQUIT_REMOTE
 #define	OPER_KLINE
 #define	OPER_TKLINE
 /* In a perfect world these two (or at least second) would be undefined. */
 #define	OPER_KILL
-#define	OPER_KILL_REMOTE
+#undef OPER_KILL_REMOTE
 
 /*
  * Maximum number of network connections your server will allow.  This must
@@ -147,7 +147,7 @@
  * 1 server = 1 connection, 1 user = 1 connection.
  * Due to various sanity checks during startup, minimum is 13.
  */
-#define MAXCONNECTIONS	50
+#define MAXCONNECTIONS 4096
 
 /* MAXIMUM LINKS
  *
@@ -184,7 +184,7 @@
  * A HUB Server has many servers connect to it at the same as opposed
  * to a leaf which just has 1 server (typically the uplink).
  */
-#undef	HUB
+#define	HUB
 
 #ifdef HUB
 /*
@@ -231,7 +231,7 @@
  * If file is not absolute path, ircd etc path is prepended.
  * Note that "#include" must be at the beginning of the line.
  */ 
-#undef	CONFIG_DIRECTIVE_INCLUDE
+#define	CONFIG_DIRECTIVE_INCLUDE
 
 /*
  * If you wish to have the server send 'vital' messages about server
@@ -267,23 +267,23 @@
 ** any of LOG_SCH_* you want. Logfile names are taken from channel names
 ** (like: ircd.ERRORS) and they must exist to be used.
 */
-#undef LOG_SERVER_CHANNELS
+#define LOG_SERVER_CHANNELS
 #ifdef LOG_SERVER_CHANNELS
-#undef LOG_SCH_ERROR	/* &ERRORS */
-#undef LOG_SCH_NOTICE	/* &NOTICES */
-#undef LOG_SCH_KILL	/* &KILLS */
-#undef LOG_SCH_CHAN	/* &CHANNEL */
-#undef LOG_SCH_NUM	/* &NUMERICS */
-#undef LOG_SCH_SERVER	/* &SERVERS */
-#undef LOG_SCH_HASH	/* &HASH */
-#undef LOG_SCH_LOCAL	/* &LOCAL */
-#undef LOG_SCH_SERVICE	/* &SERVICES */
-#undef LOG_SCH_DEBUG	/* &DEBUG */
-#undef LOG_SCH_AUTH	/* &AUTH */
-#undef LOG_SCH_SAVE	/* &SAVE */
-#undef LOG_SCH_WALLOP	/* &WALLOPS */
-#undef LOG_SCH_CLIENT	/* &CLIENTS (if defined to exist) */
-#undef LOG_SCH_OPER	/* &OPER */
+#define LOG_SCH_ERROR   /* &ERRORS */
+#define LOG_SCH_NOTICE  /* &NOTICES */
+#define LOG_SCH_KILL    /* &KILLS */
+#define LOG_SCH_CHAN    /* &CHANNEL */
+#define LOG_SCH_NUM     /* &NUMERICS */
+#define LOG_SCH_SERVER  /* &SERVERS */
+#define LOG_SCH_HASH    /* &HASH */
+#define LOG_SCH_LOCAL   /* &LOCAL */
+#define LOG_SCH_SERVICE /* &SERVICES */
+#define LOG_SCH_DEBUG   /* &DEBUG */
+#define LOG_SCH_AUTH    /* &AUTH */
+#define LOG_SCH_SAVE    /* &SAVE */
+#define LOG_SCH_WALLOP  /* &WALLOPS */
+#define LOG_SCH_CLIENT  /* &CLIENTS (if defined to exist) */
+#define LOG_SCH_OPER    /* &OPER */
 #endif /* LOG_SERVER_CHANNELS */
 
 /*
@@ -297,18 +297,18 @@
 /*
  * Define this if you want to log failed /oper attempts.
  */
-#undef FAILED_OPERLOG
+#define FAILED_OPERLOG
 
 /*
  * Define this to make ircd create logfiles if they do not exist.
  */
-#undef LOGFILES_ALWAYS_CREATE
+#define LOGFILES_ALWAYS_CREATE
 
 /*
  * Define this if you want to use crypted passwords for operators in your
  * ircd.conf file. See contrib/mkpasswd/README for more details on this.
  */
-#undef	CRYPT_OPER_PASSWORD
+#define CRYPT_OPER_PASSWORD
 
 /*
  * If you want to store encrypted passwords in N-lines for server links,
@@ -357,7 +357,7 @@
  * send to the server without processing before disconnecting the client for
  * flooding it.  Values greater than 8000 make no difference to the server.
  */
-#define	CLIENT_FLOOD	1000
+#define CLIENT_FLOOD 8000
 
 /* Remote query flood protection. */
 #define	CHREPLLEN	8192
@@ -392,7 +392,7 @@
  * The library and the include files must have been found by configure,
  * if you have installed the zlib after running configure, run it again.
  */
-#undef ZIP_LINKS
+#define ZIP_LINKS
 
 /*
  * Defining this will add an artificial 2 seconds delay for accepting
@@ -443,7 +443,7 @@
 ** Define this to get oper-only &CLIENTS channel with clients connects,
 ** quits and nick changes.
 */
-#undef CLIENTS_CHANNEL
+#define CLIENTS_CHANNEL
 
 /*
 ** Bitmask defining type of information sent to &CLIENTS, combine from
@@ -451,13 +451,13 @@
 ** (also user info), CCL_QUIT (client uid, nick, username, host and IP),
 ** CCL_QUITINFO (also quit reason), CCL_NICK (all nick changes).
 */
-/* #define CLIENTS_CHANNEL_LEVEL (CCL_CONN|CCL_QUIT) */
+#define CLIENTS_CHANNEL_LEVEL (CCL_CONN|CCL_QUIT|CCL_CONNINFO|CCL_QUITINFO)
 
 /*
 ** This adds ability to ban users with specified realnames from
 ** connecting to the server. May be useful for various drones.
 */
-#undef XLINE
+#define XLINE
 
 /*
 ** Define the reason users get as a rejection message.
@@ -484,7 +484,7 @@
 ** If you don't want non-oper clients to see tkline list (like when you run
 ** some service which automatically tklines open proxies), define this.
 */
-/* #undef DISABLE_STATSTKLINE */
+#define DISABLE_STATSTKLINE
 
 /*
 ** If you have problems with two servers autoconnecting to each other
@@ -502,7 +502,7 @@
 /*
  * Max number of channels a user is allowed to join.
  */
-#define MAXCHANNELSPERUSER  21	/* Recommended value: 21 */
+#define MAXCHANNELSPERUSER 42
 
 /*
  * USE_IAUTH makes ircd use the iauth program for authentication.
@@ -571,7 +571,7 @@
 ** Define this to allow MOTD for unregistered clients. Note that this is
 ** required by some European countries laws.
 */
-#undef MOTD_UNREG
+#define MOTD_UNREG
 
 /*
 ** For standard "Gone" away reply for remote clients, undefine this.
@@ -596,7 +596,7 @@
 ** own, enable this. Useful for server "clusters", like 0PN. Requires also
 ** proper ACLs in O-line.
 */
-#undef ENABLE_SIDTRACE
+#define ENABLE_SIDTRACE
 
 /*   STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP  */
 /* You shouldn't change anything below this line, unless absolutely needed. */
@@ -729,7 +729,7 @@
 ** If you don't want your users to have too short nicknames, define
 ** minimum nicklen allowed.
 */
-/* #define MINLOCALNICKLEN 2 */
+#define MINLOCALNICKLEN 2
 
 /*
 ** You probably don't want to disable it, but if you run into any problems,
@@ -779,8 +779,8 @@
 #define CACCEPT_DEFAULT 2
 
 /* Minimum values admin can set. */
-#define SPLIT_USERS 5000
-#define SPLIT_SERVERS	10
+#define SPLIT_USERS   0
+#define SPLIT_SERVERS 5
 
 /*
  ** Maximum SASL authentication attempts until the user gets disconnected.
