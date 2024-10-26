@@ -808,7 +808,7 @@
 /*
  ** Replaces IP addresses of linked servers and services by "255.255.255.255"
  */
-#define CLOAK_SERVER_ADDRESSES
+#undef CLOAK_SERVER_ADDRESSES
 
 /************************************************************************
  *
