@@ -2438,38 +2438,7 @@ int	m_join(aClient *cptr, aClient *sptr, int parc, char *parv[])
 					ME, BadTo(parv[0]), name);
 				continue;
 			}
-			if (*name == '!' && (*(name+1) == '#' ||
-					     *(name+1) == '!'))
-			{
-				chptr = hash_find_channels(name+2, NULL);
-				if (chptr)
-				{
-					sendto_one(sptr,
-						   replies[ERR_TOOMANYTARGETS],
-							   ME, BadTo(parv[0]),
-						   "Duplicate", name,
-						   "Join aborted.");
-					continue;
-				}
-				if (check_chid(name+2))
-				{
-					/*
-					 * This is a bit wrong: if a channel
-					 * rightfully ceases to exist, it
- 					 * can still be *locked* for up to
-					 * 2*CHIDNB^3 seconds (~24h)
-					 * Is it a reasonnable price to pay to
-					 * ensure shortname uniqueness? -kalt
-					 */
-					sendto_one(sptr, replies[ERR_UNAVAILRESOURCE],
-							   ME, BadTo(parv[0]), name);
-					continue;
-				}
-				sprintf(buf, "!%.*s%s", CHIDLEN, get_chid(),
-					name+2);
-				name = buf;
-			}
-			else if (!find_channel(name, NullChn) &&
+			if (!find_channel(name, NullChn) &&
 				 !(*name == '!' && *name != 0 &&
 				   (chptr = hash_find_channels(name+1, NULL))))
 			{
