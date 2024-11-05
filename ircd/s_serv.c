@@ -2039,7 +2039,13 @@ int	m_stats(aClient *cptr, aClient *sptr, int parc, char *parv[])
 					CONF_HUB|CONF_LEAF|CONF_DENY);
 		break;
 	case 'I' : case 'i' : /* I (and i) conf lines */
-		report_configured_links(cptr, parv[0], CONF_CLIENT);
+		if (IsAnOper(sptr) && MyConnect(sptr))
+			report_configured_links(cptr, parv[0], CONF_CLIENT);
+		else
+		{
+			sendto_one(sptr, replies[ERR_NOPRIVILEGES], ME, BadTo(parv[0]));
+			return 2;
+		}
 		break;
 	case 'k' : /* temporary K lines */
 #ifdef TKLINE
