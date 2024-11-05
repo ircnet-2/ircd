@@ -478,7 +478,7 @@
 ** do not want to show it at all), define this.
 ** Note that operators will get list of K anyway.
 */
-/* #define TXT_NOSTATSK "Please use http://example.org/klines instead" */
+#define TXT_NOSTATSK "Permission Denied"
 
 /*
 ** If you don't want non-oper clients to see tkline list (like when you run
