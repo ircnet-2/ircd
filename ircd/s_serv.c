@@ -1805,10 +1805,11 @@ static	void	report_configured_links(aClient *sptr, char *to, int mask)
 			else if ((tmp->status & CONF_OPERATOR))
 			{
 				sendto_one(sptr, replies[p[1]], ME, BadTo(to),
-					   c, host, (pass) ? "*" : null,
-					   name, port, get_conf_class(tmp),
-					   oline_flags_to_string(tmp->flags));
-
+						   c,
+						   (IsAnOper(sptr) && MyConnect(sptr)) ? host : null,
+						   (pass) ? "*" : null,
+						   name, port, get_conf_class(tmp),
+						   oline_flags_to_string(tmp->flags));
 			}
 			else
 				sendto_one(sptr, replies[p[1]], ME, BadTo(to),
