@@ -53,5 +53,6 @@ EXTERN int m_servlist (aClient *cptr, aClient *sptr, int parc,
 EXTERN int m_squery (aClient *cptr, aClient *sptr, int parc,
 			 char *parv[]);
 EXTERN int match_service_dist(aClient *cptr, char *masks);
+EXTERN void unlink_sasl_service(aClient *cptr);
 EXTERN int m_forcenick(aClient *cptr, aClient *sptr, int parc, char *parv[]);
 #undef EXTERN

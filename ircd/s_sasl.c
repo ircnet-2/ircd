@@ -165,30 +165,18 @@ void m_sasl_service(aClient *cptr, aClient *sptr, int parc, char *parv[])
 			// Authentication successful
 			acptr->flags |= FLAGS_SASL;
 			sendto_one(acptr, replies[RPL_SASLSUCCESS], me.name, BadTo(acptr->name));
+			acptr->sasl_service = NULL;
 		}
 		else if (*parv[4] == 'F')
 		{
 			// Authentication failed
 			sendto_one(acptr, replies[ERR_SASLFAIL], me.name, BadTo(acptr->name));
-			acptr->sasl_auth_attempts++;
-
-			if (acptr->sasl_auth_attempts >= MAX_SASL_AUTH_ATTEMPTS)
-			{
-				acptr->exitc = EXITC_SASL_REQUIRED;
-				exit_client(acptr, acptr, &me, "SASL authentication failed");
-			}
-
-			return;
 		}
 		else if (*parv[4] == 'A')
 		{
 			// Authentication aborted
 			sendto_one(acptr, replies[ERR_SASLABORTED], me.name, BadTo(acptr->name));
-			return;
 		}
-
-		// Unset the stored service so best_service() is executed again on next try
-		acptr->sasl_service = NULL;
 	}
 	else if (*parv[3] == 'M')
 	{
@@ -199,6 +187,12 @@ void m_sasl_service(aClient *cptr, aClient *sptr, int parc, char *parv[])
 	{
 		// NOTICE from SASL service to user
 		sendto_one(acptr, ":%s NOTICE %s :%s: %s", ME, BadTo(acptr->name), sptr->name, parv[4]);
+	}
+	else if (*parv[3] == 'K' && !IsRegisteredUser(acptr))
+	{
+		// KILL from SASL service to user
+		acptr->exitc = EXITC_SASL_REQUIRED;
+		exit_client(acptr, acptr, &me, parv[4]);
 	}
 }
 
@@ -274,5 +268,29 @@ void sendto_service(aClient *service, char *fmt, ...)
 	else
 	{
 		sendto_one(service, ":%s ENCAP %s PARSE %s %s", me.serv->sid, service->service->servp->sid, me.serv->sid, buf);
+	}
+}
+
+/*
+ * Disconnects all local clients that are currently negotiating with a specific SASL service.
+ * This function must be called when a SASL service exits.
+ */
+void unlink_sasl_service(aClient *cptr)
+{
+	aClient *acptr;
+	int i;
+	char comment[BUFSIZE];
+
+	snprintf(comment, BUFSIZE, "%s died", cptr->name);
+
+	for (i = 0; i <= highest_fd; i++)
+	{
+		if (!(acptr = local[i]))
+			continue;
+
+		if (acptr->sasl_service == cptr && !IsRegisteredUser(acptr))
+		{
+			exit_client(acptr, acptr, &me, comment);
+		}
 	}
 }
