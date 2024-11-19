@@ -1028,7 +1028,7 @@ badparamcountkills:
 	    {
 		aClient	*acptr2;
 
-		if (IsServer(cptr) || !(bootopt & BOOT_PROT))
+		if (IsServer(cptr) || IsService(cptr) || !(bootopt & BOOT_PROT))
 			goto nickkilldone;
 		if ((acptr2 = get_history(nick, (long)(KILLCHASETIMELIMIT))) &&
 		    !MyConnect(acptr2))
@@ -1077,7 +1077,7 @@ badparamcountkills:
 	/*
 	** Decide, we really have a nick collision and deal with it
 	*/
-	if (!IsServer(cptr))
+	if (!IsServer(cptr) && !IsService(cptr))
 	    {
 		/*
 		** NICK is coming from local client connection. Just
