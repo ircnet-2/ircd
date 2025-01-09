@@ -1,6 +1,8 @@
 /************************************************************************
- *   IRC - Internet Relay Chat, ircd/res_ext.h
- *   Copyright (C) 1997 Alain Nissen
+ *   IRC - Internet Relay Chat, iauth/mod_socks_ext.h
+ *   Copyright (C) 2003 erra@RusNet
+ *   Copyright (C) 2003 Francois Baligant
+ *   Copyright (C) 2024 IRCnet.com team
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -18,27 +20,12 @@
  */
 
 /*  This file contains external definitions for global variables and functions
-    defined in ircd/res.c.
+ *  defined in iauth/mod_dnsbl.c.
  */
 
-/*  External definitions for global functions.
+/*
+ * External definitions for global variables.
  */
-#ifndef RES_C
-#define EXTERN extern
-#else /* RES_C */
-#define EXTERN
-#endif /* RES_C */
-extern int init_resolver(int op);
-EXTERN time_t timeout_query_list(time_t now);
-EXTERN void del_queries(char *cp);
-EXTERN struct hostent *gethost_byname(char *name, Link *lp);
-EXTERN struct hostent *gethost_byname_type(char *name, Link *lp,
-										   int type);
-EXTERN struct hostent *gethost_byaddr(char *addr, Link *lp);
-EXTERN struct hostent *get_res(char *lp);
-EXTERN time_t expire_cache(time_t now);
-EXTERN void flush_cache(void);
-EXTERN int m_dns(aClient *cptr, aClient *sptr, int parc, char *parv[]);
-EXTERN u_long cres_mem(aClient *sptr, char *nick);
-EXTERN int bad_hostname(char *name, int len);
-#undef EXTERN
+#ifndef MOD_DNSBL_C
+extern aModule Module_dnsbl;
+#endif

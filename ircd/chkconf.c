@@ -73,6 +73,7 @@ static	int	checkSID(char *, int);
 static	int	numclasses = 0, *classarr = (int *)NULL, debugflag = 0;
 static	char	nullfield[] = "";
 static	char	maxsendq[12];
+char * configdir = IRCDCONF_DIR;
 
 #define	SHOWSTR(x)	((x) ? (x) : "*")
 
@@ -90,6 +91,7 @@ int	main(int argc, char *argv[])
 			"includes and/or M4)\n");
 		(void)printf("\t-d[#]\tthe bigger number, the more verbose "
 			"chkconf is in its checks\n");
+		(void)printf("\t-c\tUse folder instead of %s\n", IRCDCONF_DIR);
 		(void)printf("\tDefault ircd.conf = %s\n", IRCDCONF_PATH);
 		exit(0);
 	}
@@ -108,6 +110,15 @@ int	main(int argc, char *argv[])
 		showflag = 1;
 		argc--;
 		argv++;
+	}
+	if (argc > 2 && !strncmp(argv[1], "-c", 2))
+	{
+		configdir = argv[2];
+		argc-=2;
+		argv+=2;
+#ifdef CONFIG_DIRECTIVE_INCLUDE
+		config_set_ircdconf_dir(configdir);
+#endif
 	}
 	if (argc > 1)
 		configfile = argv[1];
@@ -232,7 +243,7 @@ static	void	showconf(void)
 #if defined(CONFIG_DIRECTIVE_INCLUDE)
 	if (debugflag)
 	{
-		etclen = strlen(IRCDCONF_DIR);
+		etclen = strlen(configdir);
 	}
 	fdn = fdopen(fd, "r");
 	p2 = config_read(fdn, 0, new_config_file(configfile, NULL, 0));
@@ -240,7 +251,7 @@ static	void	showconf(void)
 	{
 		if (debugflag)
 			printf("%s:%d:", p->file->filename +
-				(strncmp(p->file->filename, IRCDCONF_DIR,
+				(strncmp(p->file->filename, configdir,
 				etclen) == 0 ? etclen : 0), p->linenum);
 		printf("%s\n", p->line);
 	}
@@ -280,8 +291,8 @@ static	void	showconf(void)
 static	aConfItem 	*initconf(void)
 {
 	int	fd;
-	char	*tmp, *tmp3 = NULL, *s;
-	int	ccount = 0, ncount = 0, flags = 0, nr = 0;
+	char *tmp, *tmp3 = NULL, *tmp4 = NULL, *s;
+	int ccount = 0, ncount = 0, flags = 0, i, nr = 0;
 	aConfItem *aconf = NULL, *ctop = NULL;
 	int	mandatory_found = 0, valid = 1;
 #if defined(CONFIG_DIRECTIVE_INCLUDE)
@@ -521,13 +532,14 @@ static	aConfItem 	*initconf(void)
 			if ((tmp = getfield(NULL)) == NULL)
 				break;
 			if (aconf->status & CONF_CLIENT_MASK)
-			    {
+			{
 				if (!*tmp)
 					config_error(CF_WARN, CK_FILE, CK_LINE,
-						"no class, default 0");
+								 "no class, default 0");
 				aconf->class = get_class(atoi(tmp), nr);
-			    }
+			}
 			tmp3 = getfield(NULL);
+			tmp4 = getfield(NULL);
 		} while (0); /* to use break without compiler warnings */
 
 		if ((aconf->status & CONF_CLIENT) && tmp3)
@@ -588,6 +600,9 @@ static	aConfItem 	*initconf(void)
 				case 'p':
 				case 'P':
 				case 't':
+#ifdef ENABLE_SIDTRACE
+				case 'v':
+#endif
 					break;
 				case ' ':
 				case '\t':
@@ -724,6 +739,59 @@ static	aConfItem 	*initconf(void)
 			else
 				config_error(CF_ERR, CK_FILE, CK_LINE,
 					"no SID in M-line");
+			if (tmp3 && *tmp3)
+			{
+				for (s = tmp3; *s; s++)
+				{
+					if (!isdigit(*s))
+					{
+						config_error(CF_ERR, CK_FILE, CK_LINE,
+									 "Invalid value for split servers in M-line: %s", tmp3);
+						break;
+					}
+				}
+
+				if (*s == '\0')
+				{
+					i = atoi(tmp3);
+					if (i < SPLIT_SERVERS)
+					{
+						config_error(CF_WARN, CK_FILE, CK_LINE,
+									 "Split servers (%d) in M-Line is lower than SPLIT_SERVERS (%d)", i, SPLIT_SERVERS);
+					}
+				}
+			}
+			else
+			{
+				config_error(CF_ERR, CK_FILE, CK_LINE, "No split servers in M-line");
+			}
+
+			if (tmp4 && *tmp4)
+			{
+				for (s = tmp4; *s; s++)
+				{
+					if (!isdigit(*s))
+					{
+						config_error(CF_ERR, CK_FILE, CK_LINE,
+									 "Invalid value for split users in M-line: %s", tmp4);
+						break;
+					}
+				}
+
+				if (*s == '\0')
+				{
+					i = atoi(tmp4);
+					if (i < SPLIT_USERS)
+					{
+						config_error(CF_WARN, CK_FILE, CK_LINE,
+									 "Split users (%d) in M-Line is lower than SPLIT_USERS (%d)", i, SPLIT_USERS);
+					}
+				}
+			}
+			else
+			{
+				config_error(CF_ERR, CK_FILE, CK_LINE, "No split users in M-line");
+			}
 		}
 		if (aconf->status & CONF_ADMIN)
 		{
