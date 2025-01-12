@@ -275,8 +275,8 @@ typedef enum Status {
 #define IsCAPNegotiation(x)	(MyConnect(x) && (x)->cap_negotation)
 #define HasCap(x, y)		(MyConnect(x) && (x)->caps & y)
 #define IsSASLAuthed(x)		((x)->flags & FLAGS_SASL)
-#define IsBlockedNonAuthMsg(from, to) (to->user->flags & FLAGS_MSGNEEDSASLAUTH) && IsPerson(from) \
-                                    && !IsSASLAuthed(from) && !IsAnOper(from)
+#define IsBlockedNonAuthMsg(from, to) ((to->user->flags & FLAGS_MSGNEEDSASLAUTH) && IsPerson(from) \
+                                    && !IsSASLAuthed(from) && !IsAnOper(from))
 /*
  * defined debugging levels
  */
