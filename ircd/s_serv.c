@@ -1862,9 +1862,7 @@ static void report_fd(aClient *sptr, aClient *acptr, char *to)
 		acptr->fd,
 		locip,
 		acptr->acpt->port,
-		inetntop(AF_INET6,
-		(char *)&acptr->ip,
-		ipv6string, sizeof(ipv6string)),
+		inetntop(AF_INET6, (char *)&acptr->ip, ipv6string, sizeof(ipv6string)),
 		acptr->port,acptr->name,
 		acptr->user ? acptr->user->username : acptr->auth,
 		acptr->user ? timeofday - acptr->user->last : -1
