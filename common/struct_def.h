@@ -481,7 +481,6 @@ struct	User	{
 	u_int	iphashv;	/* IP hash value */
 	struct User *hhnext;	/* next entry in hostname hash */
 	struct User *iphnext;	/* next entry in IP hash */
-				/* sip MUST be the last in this struct!!! */
 };
 
 struct	Server	{
