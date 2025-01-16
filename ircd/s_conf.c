@@ -535,7 +535,7 @@ int	attach_Iline(aClient *cptr, struct hostent *hp, char *sockhost)
 	int	retval = -2; /* EXITC_NOILINE in register_user() */
 
 	/* We fill uaddr and uhost now, before aconf loop. */
-	if(HAS_CLOAK_IP(cptr) && cptr->spoof_tmp)
+	if(HAS_CLOAK_IP(cptr) && cptr->cloak_tmp)
 	{
 		char cloak_ip[HOSTLEN+1];
 
@@ -548,13 +548,13 @@ int	attach_Iline(aClient *cptr, struct hostent *hp, char *sockhost)
 		cptr->user->sip = mystrdup(cloak_ip);
 
 		// Set hostname
-		strncpyzt(cptr->sockhost, cptr->spoof_tmp, HOSTLEN + 1);
-		strncpyzt(cptr->user->host, cptr->spoof_tmp, HOSTLEN + 1);
-		MyFree(cptr->spoof_tmp);
-		cptr->spoof_tmp = NULL;
+		strncpyzt(cptr->sockhost, cptr->cloak_tmp, HOSTLEN + 1);
+		strncpyzt(cptr->user->host, cptr->cloak_tmp, HOSTLEN + 1);
+		MyFree(cptr->cloak_tmp);
+		cptr->cloak_tmp = NULL;
 
 		// Mark as cloaked
-		SetSpoofed(cptr);
+		SetCloaked(cptr);
 
 		// Set variables for I-Line check
 		sprintf(uaddr, "%s@%s", cptr->username, cptr->user->sip);
@@ -711,7 +711,7 @@ int	attach_Iline(aClient *cptr, struct hostent *hp, char *sockhost)
 #endif
 
 		/* Copy uhost (hostname) over sockhost, if conf flag permits. */
-		if (!IsSpoofed(cptr) && *uhost && !IsConfNoResolve(aconf))
+		if (!IsCloaked(cptr) && *uhost && !IsConfNoResolve(aconf))
 		{
 			get_sockhost(cptr, uhost+ulen);
 		}
