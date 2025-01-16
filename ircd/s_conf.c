@@ -966,7 +966,7 @@ int	attach_conf(aClient *cptr, aConfItem *aconf)
 		if (ConfMaxHLocal(aconf) > 0 || ConfMaxUHLocal(aconf) > 0 ||
 		    ConfMaxHGlobal(aconf) > 0 || ConfMaxUHGlobal(aconf) > 0 )
 		{
-			if (IsSpoofed(cptr))
+			if (IsCloaked(cptr))
 			{
 				// Check by IP address only because every SASL account has a unique IP address
 				for ((user = hash_find_ip(cptr->user->sip, NULL)); user; user = user->iphnext)
