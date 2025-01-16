@@ -246,9 +246,9 @@ char	*get_client_ip(aClient *cptr)
 #endif
 	if (cptr->user)
 	{
-		if (IsSpoofed(cptr))
+		if(IsCloaked(cptr))
 		{
-			return SPOOF_IP;
+			return CLOAK_IP;
 		}
 		else
 		{
