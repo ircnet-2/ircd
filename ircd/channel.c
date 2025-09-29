@@ -348,24 +348,16 @@ static	Link	*match_modeid(int type, aClient *cptr, aChannel *chptr)
 
 					if (extban_mode == 'a')
 					{
-						if (extban_param != NULL)
+						// $a!*@*         matches any authenticated user
+						// $a:someone!*@* matches only if account name matches
+						if (!IsSASLAuthed(cptr))
 						{
-							// $a:someone!*@* - check if account matches
-							if (IsSASLAuthed(cptr))
-							{
-								if (match(extban_param, cptr->sasl_user) != 0)
-								{
-									continue;
-								}
-							}
+							continue;
 						}
-						else
+
+						if (extban_param != NULL && match(extban_param, cptr->sasl_user) != 0)
 						{
-							// $a!*@* - check if authenticated with any account
-							if (!IsSASLAuthed(cptr))
-							{
-								continue;
-							}
+							continue;
 						}
 					}
 				}
