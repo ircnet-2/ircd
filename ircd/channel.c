@@ -3360,18 +3360,18 @@ int	m_invite(aClient *cptr, aClient *sptr, int parc, char *parv[])
 **	parv[2] - UID of the invited person
 **	parv[3] - channel name
 */
-int	m_invited(aClient *cptr, aClient *sptr, int parc, char *parv[])
+int m_invited(aClient *cptr, aClient *sptr, int parc, char *parv[])
 {
 	aChannel *chptr;
 	Link *lp;
 	aClient *inviter, *target;
 
-	if (!(inviter = find_uid(parv[1], (aClient *)NULL)))
+	if (!(inviter = find_uid(parv[1], (aClient *) NULL)))
 	{
 		return 0;
 	}
 
-	if (!(target = find_uid(parv[2], (aClient *)NULL)))
+	if (!(target = find_uid(parv[2], (aClient *) NULL)))
 	{
 		return 0;
 	}
@@ -3384,9 +3384,8 @@ int	m_invited(aClient *cptr, aClient *sptr, int parc, char *parv[])
 	for (lp = chptr->members; lp; lp = lp->next)
 	{
 		aClient *chan_op = lp->value.cptr;
-		if (MyConnect(chan_op)
-			&& (lp->flags & CHFL_CHANOP)
-			&& HasCap(chan_op, CAP_INVITE_NOTIFY))
+		if (MyConnect(chan_op) && (lp->flags & CHFL_CHANOP) &&
+			HasCap(chan_op, CAP_INVITE_NOTIFY))
 		{
 			sendto_prefix_one(chan_op, sptr, ":%s!%s@%s INVITE %s %s",
 							  inviter->name, inviter->user->username,

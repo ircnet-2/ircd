@@ -3872,7 +3872,7 @@ int	m_encap(aClient *cptr, aClient *sptr, int parc, char *parv[])
 			else
 				len += sprintf(buf+len, " %s", parv[i]);
 		}
-		Debug((DEBUG_SEND,"m_encap(serv->serv): %s", buf));
+		Debug((DEBUG_SEND, "m_encap(server->server): %s", buf));
 		/* ...and broadcast it, if the message is not (only) for me. */
 		if(strcmp(mask, me.name) && strcmp(mask, me.serv->sid)) {
             sendto_serv_v(cptr, SV_UID, "%s", buf);
@@ -3897,8 +3897,8 @@ int	m_encap(aClient *cptr, aClient *sptr, int parc, char *parv[])
 		len += sprintf(buf + len, " %s %s", sptr->name, whitelisted);
 		for (i = 3; i < parc; i++)
 			len += sprintf(buf + len, " %s%s", i+1 == parc?":":"", parv[i]);
-		Debug((DEBUG_SEND,"m_encap(service->server): %s", buf));
-        if(strcmp(mask, me.name) && strcmp(mask, me.serv->sid)) {
+		Debug((DEBUG_SEND, "m_encap(service->server): %s", buf));
+		if(strcmp(mask, me.name) && strcmp(mask, me.serv->sid)) {
             sendto_serv_v(cptr, SV_UID, "%s", buf);
         }
 	}
