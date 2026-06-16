@@ -52,7 +52,7 @@ void send_cap_list(aClient *target, char *sub_cmd, int flags)
 
 		if (strlen(buf) + strlen(cap->name) + 1 >= BUFSIZE - 3)
 		{
-			sendto_one(target, buf);
+			sendto_one(target, "%s", buf);
 			prfx_len = snprintf(buf, sizeof(buf), ":%s CAP %s %s :", ME, BadTo(target->name), sub_cmd);
 		}
 
@@ -63,7 +63,7 @@ void send_cap_list(aClient *target, char *sub_cmd, int flags)
 
 	if (strlen(buf) > prfx_len || cnt == 0)
 	{
-		sendto_one(target, buf);
+		sendto_one(target, "%s", buf);
 	}
 }
 
@@ -174,11 +174,11 @@ void cap_req(aClient *target, char *arg)
 	// Send ACK
 	if (strlen(buf[0]) > prfx_len)
 	{
-		sendto_one(target, buf[0]);
+		sendto_one(target, "%s", buf[0]);
 	}
 	if (strlen(buf[1]) > prfx_len)
 	{
-		sendto_one(target, buf[1]);
+		sendto_one(target, "%s", buf[1]);
 	}
 
 	MyFree(arg_copy);
